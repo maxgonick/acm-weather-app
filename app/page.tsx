@@ -1,6 +1,12 @@
 import SearchBar from "./components/SearchBar";
 
-type Props = {};
+type Props = {
+  searchParams: {
+    location: string;
+  };
+};
+
+const placeIdtoCoords = async (placeId: string) => {};
 
 interface Location {
   label: string;
@@ -17,7 +23,7 @@ const page = (props: Props) => {
       {/* Left Hand Side */}
       <div>
         <div>
-          <SearchBar />
+          <SearchBar location="" />
           {/* Weather Icon */}
           {/* Temperature and Time */}
         </div>
