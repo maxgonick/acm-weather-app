@@ -1,5 +1,6 @@
 import SearchBar from "./components/SearchBar";
 import { Client } from "@googlemaps/google-maps-services-js";
+import Image from "next/image";
 
 type Props = {
   searchParams?: {
@@ -16,7 +17,6 @@ const Page = async ({
   searchParams = { location: "ChIJE9on3F3HwoAR9AhGJW_fL-I" },
 }: Props) => {
   const client = new Client({});
-  console.log("test");
   // Default Los Angeles Coordinates
   const args = {
     params: {
@@ -53,6 +53,37 @@ const Page = async ({
 
   const weather = await getWeather();
 
+  const getImage = (weathercode: number) => {
+    if (weathercode == 0 || weathercode == 1) {
+      return (
+        <Image alt="weather" src="clear-day.svg" width={200} height={200} />
+      );
+    } else if (weathercode == 2) {
+      return <Image alt="weather" src="cloudy.svg" width={200} height={200} />;
+    } else if (weathercode == 3) {
+      return (
+        <Image alt="weather" src="overcast.svg" width={200} height={200} />
+      );
+    } else if (weathercode == 45 || weathercode == 48) {
+      return <Image alt="weather" src="fog.svg" width={200} height={200} />;
+    } else if (
+      (weathercode >= 51 && weathercode <= 67) ||
+      (weathercode >= 80 && weathercode <= 86)
+    ) {
+      return <Image alt="weather" src="rain.svg" width={200} height={200} />;
+    } else if (weathercode >= 71 && weathercode <= 77) {
+      return <Image alt="weather" src="snow.svg" width={200} height={200} />;
+    } else if (weathercode >= 95) {
+      return (
+        <Image alt="weather" src="thunderstorm.svg" width={200} height={200} />
+      );
+    } else {
+      return (
+        <Image alt="weather" src="clear-day.svg" width={200} height={200} />
+      );
+    }
+  };
+
   return (
     <div>
       {/* Left Hand Side */}
@@ -62,18 +93,18 @@ const Page = async ({
           <div>{coordinates[0].toString()}</div>
           <div>{coordinates[1].toString()}</div>
           {/* Weather Icon */}
+          {getImage(weather.current_weather.weathercode)}
           {/* Temperature and Time */}
           <div>
-            {weather.current_weather
+            {weather && weather.current_weather.temperature
               ? weather.current_weather.temperature
               : "Loading..."}
           </div>
           <div>
-            {weather.current_weather
+            {weather && weather.current_weather
               ? weather.current_weather.time.slice(-5)
               : "Loading..."}
           </div>
-          <div>{}</div>
         </div>
         <div>
           {/* Weather Status */}
