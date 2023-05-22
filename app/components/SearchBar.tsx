@@ -17,7 +17,7 @@ const SearchBar = (props: Props) => {
     console.log("WORK");
     console.log(value);
     const debounceTimeout = setTimeout(() => {
-      router.push(
+      router.replace(
         value === "" ? "/" : `/?location=${encodeURIComponent(value)}`
       );
     }, 300);
