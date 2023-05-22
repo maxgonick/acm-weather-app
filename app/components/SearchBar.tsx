@@ -9,7 +9,6 @@ type Props = {
 };
 
 const SearchBar = (props: Props) => {
-  const pathname = usePathname();
   const router = useRouter();
   const [value, setValue] = useState(props.location ?? "");
 
@@ -20,11 +19,11 @@ const SearchBar = (props: Props) => {
       );
     }, 300);
     return () => clearTimeout(debounceTimeout);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
-    <div>
+    <div data-testid="search-bar">
       <GooglePlacesAutocomplete
         apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
         selectProps={{
