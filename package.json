@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.3.30",
+    "@react-google-maps/api": "^2.18.1",
     "@types/node": "20.2.1",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",

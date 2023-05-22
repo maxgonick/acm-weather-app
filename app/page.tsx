@@ -1,8 +1,9 @@
 import SearchBar from "./components/SearchBar";
+import { LoadScript } from "@react-google-maps/api";
 
 type Props = {
-  searchParams: {
-    location: string;
+  searchParams?: {
+    location?: string;
   };
 };
 
@@ -13,7 +14,7 @@ interface Location {
   value: any;
 }
 
-const page = (props: Props) => {
+const Page = ({ searchParams = { location: "default" } }: Props) => {
   const handleLocation = (location: any) => {
     console.log(location);
   };
@@ -24,6 +25,7 @@ const page = (props: Props) => {
       <div>
         <div>
           <SearchBar location="" />
+          <div>{searchParams.location}</div>
           {/* Weather Icon */}
           {/* Temperature and Time */}
         </div>
@@ -41,4 +43,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;
