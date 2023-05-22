@@ -14,14 +14,13 @@ const SearchBar = (props: Props) => {
   const [value, setValue] = useState(props.location ?? "");
 
   useEffect(() => {
-    console.log("WORK");
-    console.log(value);
     const debounceTimeout = setTimeout(() => {
       router.replace(
         value === "" ? "/" : `/?location=${encodeURIComponent(value)}`
       );
     }, 300);
     return () => clearTimeout(debounceTimeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
@@ -31,8 +30,6 @@ const SearchBar = (props: Props) => {
         selectProps={{
           onChange: (location) => {
             setValue(location?.value.place_id);
-            // const searchParams = new URLSearchParams(window.location.search);
-            // searchParams.set("displaymode", location?.value.);
           },
         }}
       />
