@@ -1,5 +1,5 @@
 import SearchBar from "./components/SearchBar";
-import { Client } from "@googlemaps/google-maps-services-js";
+import { Client, PlacePhoto } from "@googlemaps/google-maps-services-js";
 import Image from "next/image";
 
 type Props = {
@@ -27,20 +27,66 @@ const Page = async ({
     },
   };
 
-  const coordinates: Array<Number> = await client
-    .geocode(args)
-    .then((gcResponse) => {
-      return [
-        gcResponse.data.results[0].geometry.location.lat,
-        gcResponse.data.results[0].geometry.location.lng,
-      ];
+  // const coordinates: Array<Number> = await client
+  //   .geocode(args)
+  //   .then((gcResponse) => {
+  //     // console.log(gcResponse.data.results);
+  //     if (gcResponse.data.results.length > 0) {
+  //       return [
+  //         gcResponse.data.results[0].geometry.location.lat,
+  //         gcResponse.data.results[0].geometry.location.lng,
+  //       ];
+  //     } else {
+  //       throw new Error("No results returned from geocoding API");
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     // fallback coordinates
+  //   });
+
+  type placeDetailsResponse = {
+    coordinates: Array<number>;
+    photos: PlacePhoto[];
+  };
+  //Type Bugs
+  const placeDetails: any = await client
+    .placeDetails(args)
+    .then((placeDetailsResponse) => {
+      if (
+        placeDetailsResponse.data.result.photos &&
+        placeDetailsResponse.data.result.geometry
+      ) {
+        console.log(placeDetailsResponse.data.result);
+        return {
+          photos: placeDetailsResponse.data.result.photos,
+          coordinates: [
+            placeDetailsResponse.data.result.geometry.location.lat,
+            placeDetailsResponse.data.result.geometry.location.lng,
+          ],
+        };
+      } else {
+        throw new Error("No results returned from place details API");
+      }
     })
-    .catch((err) => [34.0522, -118.2437]);
+    .catch((err) => {
+      console.error(err);
+      return {
+        photos: {
+          height: 2252,
+          html_attributions: [Array],
+          photo_reference:
+            "AZose0l0yv_s91OrUrrcsH_nCxSboCwy0ZuuBtxonkhogt7C0BPFspBjGTV8O9jSb0zOGs-oX_sTKXKyZfppJC5qZ-gGtLOoLnq2CxI84v4vuYX3q1lgnyiWvjV7RxwdCJDf5IPUo0hr0j4qwx-KgfraPO1SNy9d6J0bv-4xwTDkU-fVl9sn",
+          width: 4000,
+        },
+        coordinates: [34.0522342, -118.2436849],
+      };
+    });
 
   const getWeather = async () => {
     try {
       const data = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${coordinates[0]}&longitude=${coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=PST&current_weather=true`
+        `https://api.open-meteo.com/v1/forecast?latitude=${placeDetails.coordinates[0]}&longitude=${placeDetails.coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=PST&current_weather=true`
       );
       const json = await data.json();
       // console.log(json);
@@ -84,18 +130,19 @@ const Page = async ({
     }
   };
 
-  const getCityImage = async (placeID: string) => {
-    try {
-      const data = await fetch(
-        `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${placeID}&key=AIzaSyDi4DbgZ6ONKuoINMQcK29NzcA4UlACaWI`
-      );
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const photoReference = await placeDetails.photos[0].photo_reference;
+  // const photoResponse = await client.placePhoto({
+  //   params: {
+  //     photoreference: photoReference,
+  //     maxheight: 1000,
+  //     key: process.env.NEXT_PUBLIC_PLACES_KEY!,
+  //   },
+  //   responseType: "arraybuffer", // receive the data as ArrayBuffer
+  // });
 
-  getCityImage(searchParams.location!);
+  // // Create a new Blob from the ArrayBuffer and set its MIME type to 'image/jpeg'
+  // const photoBlob = new Blob([photoResponse.data], { type: "image/png" });
+  // const blob = URL.createObjectURL(photoBlob);
 
   return (
     <div>
@@ -103,8 +150,8 @@ const Page = async ({
       <div>
         <div>
           <SearchBar location="" />
-          <div>{coordinates[0].toString()}</div>
-          <div>{coordinates[1].toString()}</div>
+          <div>{placeDetails.coordinates[0].toString()}</div>
+          <div>{placeDetails.coordinates[1].toString()}</div>
           {/* Weather Icon */}
           {getImage(weather.current_weather.weathercode)}
           {/* Temperature and Time */}
