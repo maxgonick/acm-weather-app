@@ -43,10 +43,10 @@ const Page = async ({
         `https://api.open-meteo.com/v1/forecast?latitude=${coordinates[0]}&longitude=${coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=PST&current_weather=true`
       );
       const json = await data.json();
-      console.log(json);
+      // console.log(json);
       return json;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return null;
     }
   };
@@ -83,6 +83,19 @@ const Page = async ({
       );
     }
   };
+
+  const getCityImage = async (placeID: string) => {
+    try {
+      const data = await fetch(
+        `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${placeID}&key=AIzaSyDi4DbgZ6ONKuoINMQcK29NzcA4UlACaWI`
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getCityImage(searchParams.location!);
 
   return (
     <div>
