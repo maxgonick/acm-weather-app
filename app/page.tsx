@@ -8,11 +8,6 @@ type Props = {
   };
 };
 
-interface Location {
-  label: string;
-  value: any;
-}
-
 const Page = async ({
   searchParams = { location: "ChIJE9on3F3HwoAR9AhGJW_fL-I" },
 }: Props) => {
@@ -27,39 +22,14 @@ const Page = async ({
     },
   };
 
-  // const coordinates: Array<Number> = await client
-  //   .geocode(args)
-  //   .then((gcResponse) => {
-  //     // console.log(gcResponse.data.results);
-  //     if (gcResponse.data.results.length > 0) {
-  //       return [
-  //         gcResponse.data.results[0].geometry.location.lat,
-  //         gcResponse.data.results[0].geometry.location.lng,
-  //       ];
-  //     } else {
-  //       throw new Error("No results returned from geocoding API");
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //     // fallback coordinates
-  //   });
-
-  type placeDetailsResponse = {
-    coordinates: Array<number>;
-    photos: PlacePhoto[];
-  };
-  //Type Bugs
+  //Return useful details such as coordinates from the searched location using google maps SDK
   const placeDetails: any = await client
     .placeDetails(args)
     .then((placeDetailsResponse) => {
-      if (
-        placeDetailsResponse.data.result.photos &&
-        placeDetailsResponse.data.result.geometry
-      ) {
+      if (placeDetailsResponse.data.result.geometry) {
         console.log(placeDetailsResponse.data.result);
         return {
-          photos: placeDetailsResponse.data.result.photos,
+          // photos: placeDetailsResponse.data.result.photos,
           coordinates: [
             placeDetailsResponse.data.result.geometry.location.lat,
             placeDetailsResponse.data.result.geometry.location.lng,
@@ -83,6 +53,7 @@ const Page = async ({
       };
     });
 
+  //Return weather data from the searched location
   const getWeather = async () => {
     try {
       const data = await fetch(
@@ -96,9 +67,10 @@ const Page = async ({
       return null;
     }
   };
-
   const weather = await getWeather();
+  console.log(weather);
 
+  //Properly render appropriate SVG depending on weather conditions (mapping weathercode to one of the served SVGS)
   const getImage = (weathercode: number) => {
     if (weathercode == 0 || weathercode == 1) {
       return (
@@ -130,28 +102,14 @@ const Page = async ({
     }
   };
 
-  // const photoReference = await placeDetails.photos[0].photo_reference;
-  // const photoResponse = await client.placePhoto({
-  //   params: {
-  //     photoreference: photoReference,
-  //     maxheight: 1000,
-  //     key: process.env.NEXT_PUBLIC_PLACES_KEY!,
-  //   },
-  //   responseType: "arraybuffer", // receive the data as ArrayBuffer
-  // });
-
-  // // Create a new Blob from the ArrayBuffer and set its MIME type to 'image/jpeg'
-  // const photoBlob = new Blob([photoResponse.data], { type: "image/png" });
-  // const blob = URL.createObjectURL(photoBlob);
-
   return (
-    <div>
+    <div className="flex min-h-screen">
       {/* Left Hand Side */}
-      <div>
+      <div className="w-1/4">
         <div>
-          <SearchBar location="" />
-          <div>{placeDetails.coordinates[0].toString()}</div>
-          <div>{placeDetails.coordinates[1].toString()}</div>
+          <SearchBar />
+          {/* <div>{placeDetails.coordinates[0].toString()}</div>
+          <div>{placeDetails.coordinates[1].toString()}</div> */}
           {/* Weather Icon */}
           {getImage(weather.current_weather.weathercode)}
           {/* Temperature and Time */}
@@ -172,7 +130,7 @@ const Page = async ({
         </div>
       </div>
       {/* Right Hand Side */}
-      <div>
+      <div className="w-3/4">
         {/* 7 Day Forecast */}
         <ul>
           {weather && weather.daily.temperature_2m_max

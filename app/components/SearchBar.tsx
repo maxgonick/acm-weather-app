@@ -1,23 +1,23 @@
 "use client";
+//Client Component as it relies on user interacivity
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
-type Props = {
-  //   onLocationChange: (location: any) => void;
-  location: string | null;
-};
-
-const SearchBar = (props: Props) => {
+const SearchBar = () => {
   const router = useRouter();
-  const [value, setValue] = useState(props.location ?? "");
+  //holds data of locationID for searched area
+  const [value, setValue] = useState("");
 
   useEffect(() => {
+    //Prevent spamming router reloads
     const debounceTimeout = setTimeout(() => {
+      //updates URL with new search params to update SSR component
       router.replace(
         value === "" ? "/" : `/?location=${encodeURIComponent(value)}`
       );
     }, 300);
+    //Cleanup to reset timer for next useEffect trigger
     return () => clearTimeout(debounceTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
@@ -30,6 +30,7 @@ const SearchBar = (props: Props) => {
           onChange: (location) => {
             setValue(location?.value.place_id);
           },
+          placeholder: "Search for Places...", // Set the placeholder text here
         }}
       />
     </div>
