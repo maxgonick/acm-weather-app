@@ -1,6 +1,7 @@
 import SearchBar from "./components/SearchBar";
 import { Client, PlacePhoto } from "@googlemaps/google-maps-services-js";
 import Image from "next/image";
+import WeeklyCards from "./components/WeeklyCards";
 
 type Props = {
   searchParams?: {
@@ -173,7 +174,13 @@ const Page = async ({
       {/* Right Hand Side */}
       <div className="w-3/4">
         {/* 7 Day Forecast */}
-        <ul>
+        <WeeklyCards
+          highs={weather.daily.temperature_2m_max}
+          lows={weather.daily.temperature_2m_min}
+          images={weather.daily.weathercode}
+          days={weather.daily.time}
+        />
+        {/* <ul>
           {weather && weather.daily.temperature_2m_max
             ? weather.daily.temperature_2m_max.map(
                 (day: any, index: number) => <li key={index}>{day}</li>
@@ -181,7 +188,7 @@ const Page = async ({
             : Array(7)
                 .fill(null)
                 .map((_, index) => <li key={index}>Loading</li>)}
-        </ul>
+        </ul> */}
         {/* Today's Highlights */}
       </div>
     </div>
