@@ -11,6 +11,7 @@ type Props = {
 const Page = async ({
   searchParams = { location: "ChIJE9on3F3HwoAR9AhGJW_fL-I" },
 }: Props) => {
+  //Instantiate Google API connection
   const client = new Client({});
   // Default Los Angeles Coordinates
   const args = {
@@ -57,13 +58,14 @@ const Page = async ({
   const getWeather = async () => {
     try {
       const data = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${placeDetails.coordinates[0]}&longitude=${placeDetails.coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=PST&current_weather=true`
+        `https://api.open-meteo.com/v1/forecast?latitude=${placeDetails.coordinates[0]}&longitude=${placeDetails.coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_mean&timezone=auto&current_weather=true`,
+        { next: { revalidate: 10 } }
       );
       const json = await data.json();
-      // console.log(json);
+      console.log(json);
       return json;
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       return null;
     }
   };
@@ -101,6 +103,29 @@ const Page = async ({
       );
     }
   };
+  //Map weather code to string describing the weather
+  const weatherConditions = (weathercode: number): string => {
+    if (weathercode == 0 || weathercode == 1) {
+      return "Clear Day";
+    } else if (weathercode == 2) {
+      return "Cloudy Day";
+    } else if (weathercode == 3) {
+      return "Overcast Day";
+    } else if (weathercode == 45 || weathercode == 48) {
+      return "Foggy Day";
+    } else if (
+      (weathercode >= 51 && weathercode <= 67) ||
+      (weathercode >= 80 && weathercode <= 86)
+    ) {
+      return "Rainy Day";
+    } else if (weathercode >= 71 && weathercode <= 77) {
+      return "Snowy Day";
+    } else if (weathercode >= 95) {
+      return "Thunderstorms";
+    } else {
+      return "Clear Day";
+    }
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -112,20 +137,34 @@ const Page = async ({
           <div>{placeDetails.coordinates[1].toString()}</div> */}
           {/* Weather Icon */}
           {getImage(weather.current_weather.weathercode)}
-          {/* Temperature and Time */}
-          <div>
+          {/* Temperature and Time DONE*/}
+          <div className="text-5xl ">
             {weather && weather.current_weather.temperature
-              ? weather.current_weather.temperature
+              ? weather.current_weather.temperature + "°"
               : "Loading..."}
           </div>
+          {/* Render out day and time in a more readable format */}
           <div>
-            {weather && weather.current_weather
-              ? weather.current_weather.time.slice(-5)
-              : "Loading..."}
+            {weather && weather.current_weather ? (
+              <span>
+                {weather.current_weather.time.slice(0, -6)}
+                &nbsp;
+                <span className="text-slate-500">
+                  {weather.current_weather.time.slice(-5)}
+                </span>
+              </span>
+            ) : (
+              "Loading..."
+            )}
           </div>
         </div>
         <div>
           {/* Weather Status */}
+          <div>{weatherConditions(weather.current_weather.weathercode)}</div>
+          <div>
+            <Image alt="rain" src="rain.svg" />
+            Rain - {weather.daily.precipitation_probability_mean[0]}%
+          </div>
           {/* Image of City */}
         </div>
       </div>
