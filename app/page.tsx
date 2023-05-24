@@ -58,7 +58,7 @@ const Page = async ({
   const getWeather = async () => {
     try {
       const data = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${placeDetails.coordinates[0]}&longitude=${placeDetails.coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_mean&timezone=auto&current_weather=true`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${placeDetails.coordinates[0]}&longitude=${placeDetails.coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_mean,sunrise,sunset,uv_index_max&timezone=auto&current_weather=true`,
         { next: { revalidate: 10 } }
       );
       const json = await data.json();
@@ -161,9 +161,11 @@ const Page = async ({
         <div>
           {/* Weather Status */}
           <div>{weatherConditions(weather.current_weather.weathercode)}</div>
-          <div>
-            <Image alt="rain" src="rain.svg" />
-            Rain - {weather.daily.precipitation_probability_mean[0]}%
+          <div className="flex items-center">
+            <Image alt="rain" src="rain.svg" width={40} height={40} />
+            <span>
+              Rain - {weather.daily.precipitation_probability_mean[0]}%
+            </span>
           </div>
           {/* Image of City */}
         </div>
