@@ -172,7 +172,7 @@ const Page = async ({
         </div>
       </div>
       {/* Right Hand Side */}
-      <div className="w-3/4">
+      <div className="w-3/4 bg-[#F4F4F4]">
         {/* 7 Day Forecast */}
         <WeeklyCards
           highs={weather.daily.temperature_2m_max}
