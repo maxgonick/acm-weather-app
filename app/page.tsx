@@ -85,30 +85,30 @@ const Page = async ({
   const getImage = (weathercode: number) => {
     if (weathercode == 0 || weathercode == 1) {
       return (
-        <Image alt="weather" src="clear-day.svg" width={200} height={200} />
+        <Image alt="weather" src="clear-day.svg" width={500} height={500} />
       );
     } else if (weathercode == 2) {
-      return <Image alt="weather" src="cloudy.svg" width={200} height={200} />;
+      return <Image alt="weather" src="cloudy.svg" width={500} height={500} />;
     } else if (weathercode == 3) {
       return (
-        <Image alt="weather" src="overcast.svg" width={200} height={200} />
+        <Image alt="weather" src="overcast.svg" width={500} height={500} />
       );
     } else if (weathercode == 45 || weathercode == 48) {
-      return <Image alt="weather" src="fog.svg" width={200} height={200} />;
+      return <Image alt="weather" src="fog.svg" width={500} height={500} />;
     } else if (
       (weathercode >= 51 && weathercode <= 67) ||
       (weathercode >= 80 && weathercode <= 86)
     ) {
-      return <Image alt="weather" src="rain.svg" width={200} height={200} />;
+      return <Image alt="weather" src="rain.svg" width={500} height={500} />;
     } else if (weathercode >= 71 && weathercode <= 77) {
-      return <Image alt="weather" src="snow.svg" width={200} height={200} />;
+      return <Image alt="weather" src="snow.svg" width={500} height={500} />;
     } else if (weathercode >= 95) {
       return (
-        <Image alt="weather" src="thunderstorm.svg" width={200} height={200} />
+        <Image alt="weather" src="thunderstorm.svg" width={500} height={500} />
       );
     } else {
       return (
-        <Image alt="weather" src="clear-day.svg" width={200} height={200} />
+        <Image alt="weather" src="clear-day.svg" width={500} height={500} />
       );
     }
   };
@@ -139,13 +139,13 @@ const Page = async ({
   return (
     <div className="flex min-h-screen">
       {/* Left Hand Side */}
-      <div className="w-1/4 flex flex-col py-5 px-3 ">
+      <div className="w-1/4 flex flex-col py-5 px-10">
         <div>
           <SearchBar />
           {/* Weather Icon */}
           {getImage(weather.current_weather.weathercode)}
           {/* Temperature and Time DONE*/}
-          <div className="text-5xl ">
+          <div className="text-8xl text-slate-200">
             {weather && weather.current_weather.temperature
               ? weather.current_weather.temperature + "°"
               : "Loading..."}
@@ -153,13 +153,13 @@ const Page = async ({
           {/* Render out day and time in a more readable format */}
           <div>
             {weather && weather.current_weather ? (
-              <span>
+              <div className="text-3xl">
                 {weather.current_weather.time.slice(0, -6)}
                 &nbsp;
                 <span className="text-slate-500">
                   {weather.current_weather.time.slice(-5)}
                 </span>
-              </span>
+              </div>
             ) : (
               "Loading..."
             )}
@@ -168,9 +168,11 @@ const Page = async ({
         <div>
           <div className="divider"></div>
           {/* Weather Status */}
-          <div>{weatherConditions(weather.current_weather.weathercode)}</div>
-          <div className="flex items-center">
-            <Image alt="rain" src="rain.svg" width={40} height={40} />
+          <div className="text-3xl">
+            {weatherConditions(weather.current_weather.weathercode)}
+          </div>
+          <div className="flex items-center text-2xl">
+            <Image alt="rain" src="rain.svg" width={70} height={70} />
             <span>
               Rain - {weather.daily.precipitation_probability_mean[0]}%
             </span>
@@ -179,7 +181,7 @@ const Page = async ({
         </div>
       </div>
       {/* Right Hand Side */}
-      <div className="w-3/4 bg-[#F4F4F4] flex flex-col px-[4%] justify-around">
+      <div className="w-3/4 bg-[#F4F4F4] flex flex-col px-[4%] justify-center gap-20">
         {/* 7 Day Forecast */}
         <div className="flex flex-col gap-5">
           <h1 className="text-2xl font-semibold text-black">
@@ -193,7 +195,9 @@ const Page = async ({
           />
         </div>
         <div>
-          <h1 className="text-lg font-semibold text-black">Daily Highlights</h1>
+          <h1 className="text-2xl font-semibold text-black">
+            Daily Highlights
+          </h1>
           {/* Today's Highlights */}
           <HighlightCards
             UVIndex={weather.daily.uv_index_max[0]}
