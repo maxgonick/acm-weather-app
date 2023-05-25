@@ -139,11 +139,9 @@ const Page = async ({
   return (
     <div className="flex min-h-screen">
       {/* Left Hand Side */}
-      <div className="w-1/4">
+      <div className="w-1/4 flex flex-col py-5 px-3 ">
         <div>
           <SearchBar />
-          {/* <div>{placeDetails.coordinates[0].toString()}</div>
-          <div>{placeDetails.coordinates[1].toString()}</div> */}
           {/* Weather Icon */}
           {getImage(weather.current_weather.weathercode)}
           {/* Temperature and Time DONE*/}
@@ -168,6 +166,7 @@ const Page = async ({
           </div>
         </div>
         <div>
+          <div className="divider"></div>
           {/* Weather Status */}
           <div>{weatherConditions(weather.current_weather.weathercode)}</div>
           <div className="flex items-center">
@@ -184,7 +183,7 @@ const Page = async ({
         {/* 7 Day Forecast */}
         <div className="flex flex-col gap-5">
           <h1 className="text-2xl font-semibold text-black">
-            7 Day Forecast at {placeDetails ? placeDetails.name : "Los Angeles"}
+            7 Day Forecast in {placeDetails ? placeDetails.name : "Los Angeles"}
           </h1>
           <WeeklyCards
             highs={weather.daily.temperature_2m_max}
