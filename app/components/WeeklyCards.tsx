@@ -26,7 +26,7 @@ const WeekCard = ({ image, high, low, day }: WeekCardProps) => {
       return <Image alt="weather" src="snow.svg" width={50} height={50} />;
     } else if (weathercode >= 95) {
       return (
-        <Image alt="weather" src="thunderstorm.svg" width={50} height={50} />
+        <Image alt="weather" src="thunderstorms.svg" width={50} height={50} />
       );
     } else {
       return <Image alt="weather" src="clear-day.svg" width={50} height={50} />;
@@ -44,7 +44,7 @@ const WeekCard = ({ image, high, low, day }: WeekCardProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center py-2 px-0.5 bg-white rounded-xl flex-1">
+    <div className="flex flex-col items-center py-2 px-0.5 bg-white rounded-xl flex-1 max-w-xs">
       <h2>{toDay(day)}</h2>
       <div>{getImage(image)}</div>
       <div className="text-center">

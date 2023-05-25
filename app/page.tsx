@@ -1,7 +1,12 @@
 import SearchBar from "./components/SearchBar";
-import { Client, PlacePhoto } from "@googlemaps/google-maps-services-js";
+import {
+  Client,
+  PlaceDetailsResponse,
+  PlacePhoto,
+} from "@googlemaps/google-maps-services-js";
 import Image from "next/image";
 import WeeklyCards from "./components/WeeklyCards";
+import HighlightCards from "./components/HighlightCards";
 
 type Props = {
   searchParams?: {
@@ -25,53 +30,56 @@ const Page = async ({
   };
 
   //Return useful details such as coordinates from the searched location using google maps SDK
-  const placeDetails: any = await client
-    .placeDetails(args)
-    .then((placeDetailsResponse) => {
-      if (placeDetailsResponse.data.result.geometry) {
-        console.log(placeDetailsResponse.data.result);
+  const placeDetails: { name: string; coordinates: Array<number> } =
+    await client
+      .placeDetails(args)
+      .then((placeDetailsResponse) => {
+        if (placeDetailsResponse.data.result.geometry) {
+          console.log(placeDetailsResponse.data.result);
+          return {
+            // photos: placeDetailsResponse.data.result.photos,
+            name: placeDetailsResponse.data.result.name!,
+            coordinates: [
+              placeDetailsResponse.data.result.geometry.location.lat!,
+              placeDetailsResponse.data.result.geometry.location.lng!,
+            ],
+          };
+        } else {
+          throw new Error("No results returned from place details API");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
         return {
-          // photos: placeDetailsResponse.data.result.photos,
-          coordinates: [
-            placeDetailsResponse.data.result.geometry.location.lat,
-            placeDetailsResponse.data.result.geometry.location.lng,
-          ],
+          // photos: {
+          //   height: 2252,
+          //   html_attributions: [Array],
+          //   photo_reference:
+          //     "AZose0l0yv_s91OrUrrcsH_nCxSboCwy0ZuuBtxonkhogt7C0BPFspBjGTV8O9jSb0zOGs-oX_sTKXKyZfppJC5qZ-gGtLOoLnq2CxI84v4vuYX3q1lgnyiWvjV7RxwdCJDf5IPUo0hr0j4qwx-KgfraPO1SNy9d6J0bv-4xwTDkU-fVl9sn",
+          //   width: 4000,
+          // },
+          name: "Los Angeles",
+          coordinates: [34.0522342, -118.2436849],
         };
-      } else {
-        throw new Error("No results returned from place details API");
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      return {
-        photos: {
-          height: 2252,
-          html_attributions: [Array],
-          photo_reference:
-            "AZose0l0yv_s91OrUrrcsH_nCxSboCwy0ZuuBtxonkhogt7C0BPFspBjGTV8O9jSb0zOGs-oX_sTKXKyZfppJC5qZ-gGtLOoLnq2CxI84v4vuYX3q1lgnyiWvjV7RxwdCJDf5IPUo0hr0j4qwx-KgfraPO1SNy9d6J0bv-4xwTDkU-fVl9sn",
-          width: 4000,
-        },
-        coordinates: [34.0522342, -118.2436849],
-      };
-    });
+      });
 
   //Return weather data from the searched location
   const getWeather = async () => {
     try {
       const data = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${placeDetails.coordinates[0]}&longitude=${placeDetails.coordinates[1]}&temperature_unit=fahrenheit&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_mean,sunrise,sunset,uv_index_max&timezone=auto&current_weather=true`,
-        { next: { revalidate: 10 } }
+        { cache: "no-store" }
       );
       const json = await data.json();
       console.log(json);
       return json;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return null;
     }
   };
   const weather = await getWeather();
-  console.log(weather);
+  // console.log(weather);
 
   //Properly render appropriate SVG depending on weather conditions (mapping weathercode to one of the served SVGS)
   const getImage = (weathercode: number) => {
@@ -172,27 +180,33 @@ const Page = async ({
         </div>
       </div>
       {/* Right Hand Side */}
-      <div className="w-3/4 bg-[#F4F4F4]">
+      <div className="w-3/4 bg-[#F4F4F4] flex flex-col px-[4%] justify-around">
         {/* 7 Day Forecast */}
-        <WeeklyCards
-          highs={weather.daily.temperature_2m_max}
-          lows={weather.daily.temperature_2m_min}
-          images={weather.daily.weathercode}
-          days={weather.daily.time}
-        />
-        {/* <ul>
-          {weather && weather.daily.temperature_2m_max
-            ? weather.daily.temperature_2m_max.map(
-                (day: any, index: number) => <li key={index}>{day}</li>
-              )
-            : Array(7)
-                .fill(null)
-                .map((_, index) => <li key={index}>Loading</li>)}
-        </ul> */}
-        {/* Today's Highlights */}
+        <div className="flex flex-col gap-5">
+          <h1 className="text-2xl font-semibold text-black">
+            7 Day Forecast at {placeDetails ? placeDetails.name : "Los Angeles"}
+          </h1>
+          <WeeklyCards
+            highs={weather.daily.temperature_2m_max}
+            lows={weather.daily.temperature_2m_min}
+            images={weather.daily.weathercode}
+            days={weather.daily.time}
+          />
+        </div>
+        <div>
+          <h1 className="text-lg font-semibold text-black">Daily Highlights</h1>
+          {/* Today's Highlights */}
+          <HighlightCards
+            UVIndex={weather.daily.uv_index_max[0]}
+            mph={weather.current_weather.windspeed}
+            sunrise={weather.daily.sunrise[0]}
+            sunset={weather.daily.sunset[0]}
+          />
+        </div>
       </div>
     </div>
   );
 };
 
 export default Page;
+//
