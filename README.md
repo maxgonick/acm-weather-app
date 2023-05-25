@@ -1,34 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This app is hosted at [https://acm-weather-app.vercel.app/](https://acm-weather-app.vercel.app/)
 
-## Getting Started
+Tech Stack:
 
-First, run the development server:
+I wrote this using React.js for the frontend and Next.js with Typescript for a full-stack framework. For styling I used Tailwind.css, as well as a UI component library called Daisy.ui (for displaying a graph of the UV Index and nothing else). I didn't really use a backend as I didn't need it, as all I needed was data fetching from APIs which was done client-side. However I did take advantage of Next.js 13 and the app directory, so I used this as an opportunity to use RSC (React Server Components) to implement all non-interactive components.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+How to run:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run `npm i` to install all necessary dependencies and then run `npm run dev` to locally host this webapp.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Building for Production:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Run `npm run build` to generate an optimized build, and then run `npm run start` to host the webpage.
