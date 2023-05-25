@@ -24,7 +24,7 @@ const SunriseSunset = ({ sunrise, sunset }: SunriseSunsetProps) => {
   };
 
   return (
-    <div className="border bg-white rounded-xl py-6 flex flex-col items-center max-w-[400px]">
+    <div className="border bg-white rounded-xl py-6 flex flex-col items-center max-w-[300px]">
       <div className="text-xl text-slate-600">Sunrise and Sunset</div>
       <div className="flex items-center ">
         <Image src="sunrise.svg" alt="uv index" height={80} width={100} />
@@ -44,7 +44,7 @@ type UVIndexProps = {
 
 const UVIndex = ({ index }: UVIndexProps) => {
   return (
-    <div className="flex flex-col py-6 gap-2 border bg-white rounded-xl items-center max-w-[400px]">
+    <div className="flex flex-col py-6 gap-2 border bg-white rounded-xl items-center max-w-[300px]">
       {/* <div className="flex items-center"> */}
       <div className="text-xl text-slate-600">UV Index </div>
       {/* <Image src="uv-index.svg" alt="uv index" height={30} width={30} /> */}
@@ -65,7 +65,7 @@ type WindStatusProps = {
 
 const WindStatus = ({ mph }: WindStatusProps) => {
   return (
-    <div className="border bg-white rounded-xl py-6 px-1  flex flex-col justify-between items-center max-w-[400px]">
+    <div className="border bg-white rounded-xl py-6 px-1  flex flex-col justify-between items-center max-w-[300px]">
       <h2 className="text-xl text-slate-600">Wind Status</h2>
       <Image src="wind.svg" alt="wind" height={100} width={100} />
       <h1 className="text-2xl text-black">{mph} mph</h1>
