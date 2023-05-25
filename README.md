@@ -11,3 +11,7 @@ Run `npm i` to install all necessary dependencies and then run `npm run dev` to 
 Building for Production:
 
 Run `npm run build` to generate an optimized build, and then run `npm run start` to host the webpage.
+
+Testing:
+
+Run `npm run test` to run basic Jest tests
